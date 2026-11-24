@@ -79,8 +79,9 @@ def test_ai_questions_need_a_real_quote_and_one_correct_answer():
     src = norm_match(a["body"])
     base = {"stem": "Xlorofill saqlovchi mayda tanachalar nima deb ataladi?", "options": ["Xloroplast", "Og'izcha", "Kraxmal", "Glyukoza"], "correct": 0,
             "quote": "Xlorofill saqlovchi mayda tanachalar xloroplast deb ataladi.", "topic": "Xloroplast"}
-    bad = [{**base, "quote": "Matnda bunday gap yo'q, lekin ishonarli."}, {**base, "correct": [0, 1]}, {**base, "correct": True}, {**base, "options": ["A", "a", "B", "C"]},
-           {**base, "options": base["options"][:3]}, {**base, "correct": 2}, {**base, "quote": "Xlorofill"}, "{}", {**base, "stem": 7}]
+    bad = [{**base, "quote": "Matnda bunday gap yo'q, lekin ishonarli."}, {**base, "correct": [0, 1]}, {**base, "correct": True},
+           {**base, "options": ["A", "a", "B", "C"]}, {**base, "options": base["options"][:3]}, {**base, "correct": 2}, {**base, "quote": "Xlorofill"},
+           "{}", {**base, "stem": 7}]
     out, why = accept([*bad, base, {**base, "quote": "XLOROFILL  saqlovchi mayda tanachalar, xloroplast deb ataladi"}], src, a["passages"], a["topics"], 10)
     assert len(out) == 1, "only the grounded question; the copy with another quote is a duplicate"
     assert why == {"quote": 2, "correct": 2, "grounded": 1, "distinct": 1, "options": 1, "shape": 1, "stem": 1, "duplicate": 1}

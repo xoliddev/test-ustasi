@@ -113,12 +113,10 @@ async def test_solving_saves_as_it_goes_submits_once_and_reveals_mistakes():
         t = await published(svc, clock)
         view, _ = await svc.start(JASUR, t["id"])
         by_stem = {q["stem"]: q for q in t["questions"]}
-        right = 0
-        for item in view["questions"]:
+        for i, item in enumerate(view["questions"]):
             q = by_stem[item["stem"]]
-            want = q["options"][q["correct"]] if right < 7 else next(o for o in item["options"] if o != q["options"][q["correct"]])
+            want = q["options"][q["correct"]] if i < 7 else next(o for o in item["options"] if o != q["options"][q["correct"]])
             res, _ = await svc.answer(JASUR, view["attempt"], item["pos"], item["options"].index(want))
-            right += 1
             clock.skip(seconds=40)
         assert res["answered"] == 10
         await refused("generic", svc.answer(JASUR, view["attempt"], 10, 0))
@@ -145,14 +143,14 @@ async def test_time_is_kept_by_the_server_and_runs_out():
         assert res["time_up"] is True
         r = await svc.result(JASUR, t["id"])
         assert r["auto"] and r["seconds"] == 300, "closed at its deadline, not when noticed"
-        v2, _ = await svc.start(MADINA, t["id"])
+        _v2, _ = await svc.start(MADINA, t["id"])
         clock.skip(minutes=6)
         await svc.due_notes()
         assert (await svc.result(MADINA, t["id"]))["auto"]
 
 
 async def test_several_attempts_hide_answers_until_the_last():
-    async with service_env() as (svc, clock):
+    async with service_env() as (svc, _clock):
         d = await foto_draft(svc, 5)
         await svc.set_settings(NODIRA, d["id"], {"grp": 1, "attempts": 2, "rank": True})
         t, _ = await svc.publish(NODIRA, d["id"])
@@ -186,7 +184,8 @@ async def test_results_analysis_retest_and_notes_once():
         from testustasi.core.seedgen import simulate, students
 
         people = [{**s, "id": {-101: JASUR}.get(s["id"], s["id"])} for s in students()]
-        sims = simulate(qs, people, "test", {2: {"kind": "pick", "option": (qs[2]["correct"] + 1) % 4, "share": 60}, 5: {"kind": "key", "option": (qs[5]["correct"] + 2) % 4}})
+        traps = {2: {"kind": "pick", "option": (qs[2]["correct"] + 1) % 4, "share": 60}, 5: {"kind": "key", "option": (qs[5]["correct"] + 2) % 4}}
+        sims = simulate(qs, people, "test", traps)
         notes = []
         for s in sims:
             v, _ = await svc.start(s["user"], t["id"])
@@ -204,7 +203,7 @@ async def test_results_analysis_retest_and_notes_once():
         assert flags[3] == "hard" and flags[6] == "key"
         pick = an["questions"][2]["pick"]
         assert pick["option"] == (qs[2]["correct"] + 1) % 4 and pick["pct"] >= 50
-        title, csv = await svc.csv(NODIRA, t["id"], {k: k for k in ("no", "name", "score", "pct", "grade", "time", "status", "at", "st_done", "st_working",
+        _title, csv = await svc.csv(NODIRA, t["id"], {k: k for k in ("no", "name", "score", "pct", "grade", "time", "status", "at", "st_done", "st_working",
                                                                    "st_waiting")}, lambda ms: "t")
         assert csv.startswith("﻿") and csv.count("\r\n") == 26 and "Jasur" in csv
         info, rnotes = await svc.retest(NODIRA, t["id"])

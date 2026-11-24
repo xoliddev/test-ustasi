@@ -89,7 +89,7 @@ def ai_vectors(v: dict, texts: list[dict]) -> None:
     v["edited"] = [[d, _edit(d, out[0])] for d in ({"stem": "Yangi savol matni?"}, {"options": ["Bir", "Ikki", "Uch", "Ikki"]}, {"correct": 3},
                                                     {"topic": ""}, {"stem": 5}, {"explanation": "Izoh"}, "x")]
     v["grounded"] = [[x, q, validate.grounded(x, q)] for x, q in (("Xloroplast", "tanachalar xloroplast deb ataladi"), ("1771-yil", "1771-yilda olim"),
-                                                                 ("Mitoxondriya", "tanachalar xloroplast deb ataladi"), ("21%", "havoning 21 foizi"))]
+                                                                 ("Mitoxondriya", "tanachalar xloroplast deb ataladi"), ("21%", "havoning 21 foizi"), ("2", "Fotosintez ikki bosqichda boradi"), ("3", "ikki bosqich"))]
 
 
 def _try(raw, src, a):

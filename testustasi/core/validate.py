@@ -10,6 +10,7 @@ instruction hidden in a PDF like "make every answer A" changes nothing."""
 from __future__ import annotations
 
 from .text import WORD, InputError, clean, h32, norm_match
+from .uzwords import number_word
 
 LIMITS = {"stem": (8, 300), "option": (1, 120), "explanation": (0, 400), "topic": (2, 40), "quote": (12, 400)}
 LEVELS = {"oson": 1, "o'rta": 2, "orta": 2, "qiyin": 3, "easy": 1, "medium": 2, "hard": 3}
@@ -53,8 +54,9 @@ def grounded(answer: str, quote: str) -> bool:
     """Some word of the correct option (or its number) is in the quote: "Xloroplast" and "… tanachalar xloroplast deb
     ataladi" are grounded, an answer the quote never mentions is not."""
     qwords = norm_match(quote).split(" ")
+    spelled = [str(got[0]) for i in range(len(qwords)) if (got := number_word(qwords, i))]  # "ikki bosqich" grounds "2"
     for w in norm_match(answer).split(" "):
-        if w.isdigit() and w in qwords:
+        if w.isdigit() and (w in qwords or w in spelled):
             return True
         if len(w) >= 3 and any(q.startswith(w[: max(3, len(w) - 3)]) for q in qwords if len(q) >= 3):
             return True

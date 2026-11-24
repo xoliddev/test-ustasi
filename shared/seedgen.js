@@ -34,12 +34,12 @@ export function simulate(questions, people, seed, traps = {}, boost = 0) {
         return;
       }
       if (t && t.kind === 'key') {
-        if (a >= 72) answers[q.id] = r < 75 ? t.option : q.correct;
-        else answers[q.id] = r < 35 ? t.option : r < 75 ? q.correct : pickWrong(q, r);
+        if (a >= 72) answers[q.id] = r < 90 ? t.option : q.correct;
+        else answers[q.id] = r < 25 ? t.option : r < 80 ? q.correct : pickWrong(q, r);
         return;
       }
       const bias = (h32(`q:${seed}:${q.id}`) % 21) - 10;
-      const p = Math.max(5, Math.min(97, a + (2 - q.level) * 10 + bias));
+      const p = Math.max(5, Math.min(97, 30 + Math.floor(((a - 50) * 3) / 2) + (2 - q.level) * 10 + bias));
       answers[q.id] = r < p ? q.correct : pickWrong(q, h32(`w:${seed}:${s.id}:${q.id}`));
     });
     const seconds = questions.length * (40 + Math.floor(((100 - a) * 3) / 4)) + (h32(`t:${seed}:${s.id}`) % 90);

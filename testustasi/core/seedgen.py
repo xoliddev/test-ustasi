@@ -49,12 +49,12 @@ def simulate(questions: list[dict], people: list[dict], seed: str, traps: dict[i
                 continue
             if t and t["kind"] == "key":
                 if a >= 72:  # the strong ones fall for the misleading option most of all
-                    answers[q["id"]] = t["option"] if r < 75 else q["correct"]
+                    answers[q["id"]] = t["option"] if r < 90 else q["correct"]
                 else:
-                    answers[q["id"]] = t["option"] if r < 35 else q["correct"] if r < 75 else _pick_wrong(q, r)
+                    answers[q["id"]] = t["option"] if r < 25 else q["correct"] if r < 80 else _pick_wrong(q, r)
                 continue
             bias = h32(f"q:{seed}:{q['id']}") % 21 - 10
-            p = max(5, min(97, a + (2 - q["level"]) * 10 + bias))
+            p = max(5, min(97, 30 + (a - 50) * 3 // 2 + (2 - q["level"]) * 10 + bias))
             answers[q["id"]] = q["correct"] if r < p else _pick_wrong(q, h32(f"w:{seed}:{s['id']}:{q['id']}"))
         seconds = len(questions) * (40 + (100 - a) * 3 // 4) + h32(f"t:{seed}:{s['id']}") % 90
         out.append({"user": s["id"], "answers": answers, "seconds": seconds})

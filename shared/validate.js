@@ -2,6 +2,7 @@
 // distinct options, one correct, lengths, a quote that occurs in the source, a grounded answer), and the field rules
 // for a teacher's edit.
 import { InputError, clean, h32, normMatch } from './text.js';
+import { numberWord } from './uzwords.js';
 
 export const LIMITS = { stem: [8, 300], option: [1, 120], explanation: [0, 400], topic: [2, 40], quote: [12, 400] };
 const LEVELS = { oson: 1, "o'rta": 2, orta: 2, qiyin: 3, easy: 1, medium: 2, hard: 3 };
@@ -37,8 +38,9 @@ export function occurs(quote, sourceNorm) {
 
 export function grounded(answer, quote) {
   const qwords = normMatch(quote).split(' ');
+  const spelled = qwords.map((_, i) => numberWord(qwords, i)).filter(Boolean).map((g) => String(g[0]));
   for (const w of normMatch(answer).split(' ')) {
-    if (/^[0-9]+$/.test(w) && qwords.includes(w)) return true;
+    if (/^[0-9]+$/.test(w) && (qwords.includes(w) || spelled.includes(w))) return true;
     if (L(w) >= 3) {
       const head = Array.from(w).slice(0, Math.max(3, L(w) - 3)).join('');
       if (qwords.some((q) => L(q) >= 3 && q.startsWith(head))) return true;

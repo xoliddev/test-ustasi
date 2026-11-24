@@ -46,6 +46,8 @@ DEMO = {
     "demo.try_lead": ("Istalgan o'zbekcha darslik matnini qo'ying — shu zahoti test savollari va har birining matndagi iqtibosi chiqadi. Matn hech qayerga yuborilmaydi.",
                       "Вставьте любой учебный текст на узбекском — сразу появятся вопросы теста и цитата из текста к каждому. Текст никуда не отправляется."),
     "demo.try_ph": ("Matnni shu yerga qo'ying…", "Вставьте текст сюда…"), "demo.try_examples": ("Namunalar:", "Примеры:"),
+    "demo.ex_ulugbek": ("Tarix", "История"), "demo.ex_orol": ("Geografiya", "География"), "demo.ex_tovush": ("Fizika", "Физика"),
+    "demo.ex_hujayra": ("Biologiya", "Биология"),
     "demo.try_count": ("{n} ta savol", "вопросов: {n}"),
     "demo.try_empty": ("Bu matndan sifatli savol chiqmadi. Ta'riflar («X — …», «… deb ataladi»), sanalar va sonlar bor matnni sinab ko'ring.",
                        "Из этого текста не вышло качественных вопросов. Попробуйте текст с определениями («X — …», «… deb ataladi»), датами и числами."),

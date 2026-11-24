@@ -4,7 +4,7 @@ import { LETTERS } from '../shared/analysis.js';
 import { generate } from '../shared/generate.js';
 import { h } from '../webapp/util.js';
 
-const EXAMPLES = [['ulugbek', 'Tarix'], ['orol', 'Geografiya'], ['tovush', 'Fizika'], ['hujayra', 'Biologiya']];
+const EXAMPLES = ['ulugbek', 'orol', 'tovush', 'hujayra'];
 
 export function createTry({ P, texts }) {
   const byId = Object.fromEntries(texts.map((t) => [t.id, t]));
@@ -14,8 +14,9 @@ export function createTry({ P, texts }) {
   const title = h('h2');
   const lead = h('p', { class: 'try-lead' });
   const exLabel = h('span', { class: 'try-ex-l' });
-  const chips = h('div', { class: 'try-ex' }, exLabel, EXAMPLES.map(([id, label]) => h('button', { type: 'button', class: 'try-chip', 'data-testid': `try-ex-${id}`,
-    onclick: () => { input.value = byId[id].body; paint(); } }, label)));
+  const chipBtns = EXAMPLES.map((id) => h('button', { type: 'button', class: 'try-chip', 'data-testid': `try-ex-${id}`,
+    onclick: () => { input.value = byId[id].body; paint(); } }));
+  const chips = h('div', { class: 'try-ex' }, exLabel, chipBtns);
   let timer = null;
 
   function paint() {
@@ -44,6 +45,7 @@ export function createTry({ P, texts }) {
     lead.textContent = P('demo.try_lead');
     input.placeholder = P('demo.try_ph');
     exLabel.textContent = P('demo.try_examples');
+    chipBtns.forEach((b, i) => { b.textContent = P(`demo.ex_${EXAMPLES[i]}`); });
     paint();
   }
   input.value = byId.ulugbek.body;

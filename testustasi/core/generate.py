@@ -105,7 +105,7 @@ def _gap(s: str, p: int, si: int, a: dict, title_keys: set[str]) -> dict | None:
                 break
             stem_q = f"Bo'sh joyga mos javobni tanlang: «{gapped}»"
             return _q("gap", p, si, stem_q, inflect(t["text"], suf), [inflect(x["text"], suf) for x in ds],
-                      "Gap matnda aynan shunday berilgan.", s, t["key"], a["topics"][p])
+                      "", s, t["key"], a["topics"][p])
     return None
 
 
@@ -140,7 +140,7 @@ def candidates(a: dict) -> list[dict]:
                 continue
             nq = num_question(s, sentences)
             if nq:
-                q = _q("num", p["n"], si, nq["stem"], nq["answer"], nq["distractors"], f"Matnga ko'ra: {nq['answer']}.", s, f"num:{p['n']}:{si}", a["topics"][p["n"]])
+                q = _q("num", p["n"], si, nq["stem"], nq["answer"], nq["distractors"], "", s, f"num:{p['n']}:{si}", a["topics"][p["n"]])
                 if q:
                     out.append(q)
             g = _gap(s, p["n"], si, a, title_keys)

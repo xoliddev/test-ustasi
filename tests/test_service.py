@@ -184,7 +184,7 @@ async def test_results_analysis_retest_and_notes_once():
         from testustasi.core.seedgen import simulate, students
 
         people = [{**s, "id": {-101: JASUR}.get(s["id"], s["id"])} for s in students()]
-        traps = {2: {"kind": "pick", "option": (qs[2]["correct"] + 1) % 4, "share": 60}, 5: {"kind": "key", "option": (qs[5]["correct"] + 2) % 4}}
+        traps = {2: {"kind": "pick", "option": (qs[2]["correct"] + 1) % 4, "share": 70}, 5: {"kind": "key", "option": (qs[5]["correct"] + 2) % 4}}
         sims = simulate(qs, people, "test", traps)
         notes = []
         for s in sims:

@@ -4,7 +4,8 @@ numbers).
 
 * a percentage is round-half-up of 100 × part / whole;
 * the grade is the school's five-point scale (86 % and up — 5, 71 % — 4, 56 % — 3, below — 2);
-* discrimination compares the top 27 % of students (by score) with the bottom 27 %;
+* discrimination compares the top 27 % of students with the bottom 27 %, ranked by their score on the *other*
+  questions (the corrected item-total: the question itself does not decide who counts as strong);
 * flags: "key" (strong students got it wrong too: the question or its key may be wrong), "hard" (most got it wrong;
   with the wrong option most of them picked), "easy" (nearly everyone got it right). Flags need at least 5 results."""
 
@@ -75,8 +76,12 @@ def table(people: list[dict], attempts: list[dict], total: int) -> dict:
     return {"rows": rows, "stats": stats}
 
 
-def _ranked(last: dict[int, dict]) -> list[dict]:
-    return sorted(last.values(), key=lambda a: (-a["score"], a["submitted_at"] - a["started_at"], a["user"]))
+def _ranked(last: dict[int, dict], q: dict | None = None) -> list[dict]:
+    """Strongest first: by the score without question ``q``, then the faster, then the user id."""
+    def rest(a: dict) -> int:
+        return a["score"] - (1 if q is not None and a["answers"].get(q["id"]) == q["correct"] else 0)
+
+    return sorted(last.values(), key=lambda a: (-rest(a), a["submitted_at"] - a["started_at"], a["user"]))
 
 
 def questions_report(questions: list[dict], attempts: list[dict]) -> dict:
@@ -85,9 +90,10 @@ def questions_report(questions: list[dict], attempts: list[dict]) -> dict:
     ranked = _ranked(last)
     n = len(ranked)
     k = max(1, rdiv(27 * n, 100)) if n >= MIN_FLAGS else 0
-    top, bottom = ranked[:k], ranked[n - k:] if k else []
     out = []
     for pos, q in enumerate(questions):
+        order = _ranked(last, q)
+        top, bottom = order[:k], order[n - k:] if k else []
         picks = [0, 0, 0, 0]
         blank = 0
         for a in ranked:

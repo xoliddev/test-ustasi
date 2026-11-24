@@ -1,0 +1,97 @@
+/* Test Ustasi browser demo: Nodira ustoz's phone, Jasur's phone and the "O'zingiz sinab ko'ring" box. The phone frame
+   and the chat are in phone.css, the Mini App in webapp/app.css. */
+:root { --font: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; --sun: #f2b134; --sun-ink: #2a1a00; }
+* { box-sizing: border-box; }
+body {
+  margin: 0; min-height: 100dvh; overflow-x: hidden; color: #edf1fa; font: 15px/1.45 var(--font);
+  background: radial-gradient(90% 60% at 8% 0%, #1d3b6e 0%, transparent 60%), radial-gradient(70% 50% at 96% 30%, #3b3317 0%, transparent 55%), #0c1426;
+}
+button { cursor: pointer; font-family: inherit; }
+.demo-bar {
+  position: sticky; top: 0; z-index: 40; display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+  padding: 10px 20px; background: rgba(10, 16, 34, .92); backdrop-filter: blur(8px); border-bottom: 1px solid rgba(255, 255, 255, .08);
+}
+.demo-logo { display: flex; align-items: center; gap: 10px; color: #fff; text-decoration: none; font-weight: 800; font-size: 17px; }
+.demo-mark { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 9px; background: var(--sun); color: #1d3b6e; }
+.demo-mark svg { width: 22px; height: 22px; }
+.demo-badge { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; padding: 5px 12px; border-radius: 999px; background: rgba(255, 255, 255, .07); color: #c9d3ea; }
+.demo-badge .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--sun); box-shadow: 0 0 0 3px rgba(240, 173, 60, .25); }
+.demo-date { font-size: 13px; color: #c9d3ea; font-variant-numeric: tabular-nums; }
+.demo-tools { display: flex; align-items: center; gap: 8px; margin-left: auto; flex-wrap: wrap; }
+.demo-btn { border: 1px solid rgba(255, 255, 255, .2); background: transparent; color: #fff; border-radius: 10px; padding: 6px 12px; font-size: 13.5px; font-weight: 700; text-decoration: none; }
+.demo-btn.solid { background: var(--sun); color: var(--sun-ink); border-color: var(--sun); }
+.demo-btn:hover { background: rgba(255, 255, 255, .08); }
+.demo-btn.solid:hover { filter: brightness(1.05); background: var(--sun); }
+.demo-btn:disabled { opacity: .5; cursor: default; }
+.demo-intro { max-width: 980px; margin: 0 auto; padding: 22px 24px 4px; display: grid; gap: 6px; text-align: center; }
+.demo-intro h1 { margin: 0; font-size: 30px; letter-spacing: -.02em; }
+.demo-intro p { margin: 0 auto; max-width: 820px; color: #b7c2dc; }
+.story { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; padding: 14px 16px 0; max-width: 1400px; margin: 0 auto; }
+.story-btn { display: inline-flex; align-items: center; gap: 8px; border: 1px solid rgba(255, 255, 255, .14); background: rgba(255, 255, 255, .06); color: #edf1fa;
+  border-radius: 999px; padding: 7px 14px 7px 8px; font-weight: 600; font-size: 13.5px; text-align: left; }
+.story-btn b { display: grid; place-items: center; flex: none; width: 24px; height: 24px; border-radius: 50%; background: rgba(255, 255, 255, .08); border: 1px solid rgba(255, 255, 255, .18); font-size: 12px; }
+.story-btn.done { color: #9aa8c8; }
+.story-btn.done b { background: var(--sun); color: var(--sun-ink); border-color: var(--sun); }
+.story-btn.next, .story-btn.now { border-color: var(--sun); box-shadow: 0 0 0 3px rgba(240, 173, 60, .18); }
+.story-btn:disabled { opacity: .6; cursor: default; }
+.story-cap { max-width: 900px; margin: 12px auto 0; padding: 10px 16px; border-radius: 12px; background: rgba(240, 173, 60, .1); border: 1px solid rgba(240, 173, 60, .3);
+  color: #f7e9c8; text-align: center; font-size: 14.5px; min-height: 44px; }
+.who-switch { display: none; }
+.demo-stage { display: flex; justify-content: center; align-items: flex-start; gap: 26px; padding: 20px 18px 40px; }
+.side { display: grid; justify-items: center; gap: 12px; min-width: 0; }
+.side-label { display: flex; align-items: baseline; gap: 8px; font-size: 15px; }
+.side-label b { font-size: 18px; }
+.side-label span { color: #9aa8c8; }
+.try { flex: 0 1 360px; align-self: flex-start; justify-items: stretch; align-content: start; padding-top: 38px; }
+.try-card { align-content: start; background: #f8f9fd; color: #17213a; border-radius: 20px; padding: 18px 18px 16px; box-shadow: 0 40px 80px -40px rgba(0, 0, 0, .8); display: grid; gap: 10px; }
+.try-card h2 { margin: 0; font-size: 19px; }
+.try-card textarea { width: 100%; box-sizing: border-box; border: 1.5px solid #d6dbe8; border-radius: 12px; padding: 10px 12px; font: inherit; font-size: 13.5px; line-height: 1.45; background: #fff; color: #17213a; resize: vertical; }
+.try-card textarea:focus { outline: none; border-color: #2f5fa8; }
+.try-out { display: grid; gap: 8px; max-height: 560px; overflow: auto; }
+.try-q { background: #fff; border: 1px solid #e6e9f2; border-radius: 12px; padding: 9px 11px; display: grid; gap: 5px; }
+.try-stem { margin: 0; font-weight: 600; font-size: 13.5px; }
+.try-opts { margin: 0; padding: 0; list-style: none; display: grid; gap: 2px; font-size: 13px; }
+.try-opts li { padding: 2px 6px; border-radius: 6px; }
+.try-opts li.ok { background: #e3f5ec; color: #10563a; font-weight: 600; }
+.try-quote { margin: 0; padding: 5px 8px; border-left: 3px solid #f2b134; background: #fff8e8; border-radius: 0 8px 8px 0; font-size: 12.5px; color: #5b4510; }
+.try-lead { margin: 0; color: #5d6964; font-size: 13.5px; }
+.try-ex { display: flex; flex-wrap: wrap; gap: 5px; align-items: center; }
+.try-ex-l { font-size: 12px; color: #6d7873; margin-right: 2px; }
+.try-chip { border: 1px solid #ddd6c8; background: #fff; color: #2c3a35; border-radius: 999px; padding: 3px 10px; font-size: 12.5px; }
+.try-chip:hover { border-color: #2f5fa8; }
+.try-res { display: grid; gap: 6px; }
+.try-kind { justify-self: start; font-size: 12px; font-weight: 700; color: #1d3b6e; background: #e5ecf9; border-radius: 999px; padding: 2px 10px; }
+.try-kind:empty { display: none; }
+.try-hint { margin: 0; color: #6d7873; font-size: 13.5px; }
+.demo-foot { text-align: center; color: #9aa8c8; font-size: 12.5px; padding: 0 20px 34px; max-width: 980px; margin: 0 auto; }
+@media (max-width: 1240px) { .demo-stage { gap: 16px; padding: 16px 10px 32px; } }
+@media (max-width: 1100px) { .demo-stage { flex-wrap: wrap; } .try { order: 3; flex-basis: 100%; max-width: 640px; padding-top: 0; } }
+@media (max-width: 760px) {
+  .demo-bar { position: static; padding: 8px 12px; gap: 8px; }
+  .demo-badge { display: none; }
+  .demo-tools { margin-left: 0; width: 100%; gap: 6px; }
+  .demo-btn { padding: 5px 9px; font-size: 12.5px; }
+  .demo-intro { padding: 14px 16px 0; }
+  .demo-intro h1 { font-size: 22px; }
+  .demo-intro p { font-size: 14px; }
+  .story { flex-wrap: nowrap; overflow-x: auto; justify-content: flex-start; scrollbar-width: none; padding: 10px 12px 2px; gap: 6px; }
+  .story::-webkit-scrollbar { display: none; }
+  .story-btn { flex: none; font-size: 12.5px; padding: 6px 10px 6px 6px; }
+  .story-cap { margin: 10px 12px 0; font-size: 13.5px; text-align: left; }
+  .who-switch { position: sticky; top: 0; z-index: 30; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 4px; margin: 10px 0 0; padding: 4px;
+    background: rgba(12, 20, 38, .96); backdrop-filter: blur(6px); border-bottom: 1px solid rgba(255, 255, 255, .1); }
+  .who-switch button { border: 0; background: transparent; padding: 8px 4px; border-radius: 9px; font-weight: 700; color: #9aa8c8; font-size: 13px; }
+  .who-switch button.on { background: var(--sun); color: var(--sun-ink); }
+  .demo-stage { display: block; padding: 0; }
+  .side { display: none; }
+  .side.show { display: grid; }
+  .side-label { display: none; }
+  .try { padding: 12px 16px 24px; }
+  .phone { height: calc(100dvh - 54px); min-height: 560px; width: 100%; padding: 0; border-radius: 0; background: none; box-shadow: none; }
+  .phone.ring { box-shadow: inset 0 0 0 3px rgba(240, 173, 60, .9); }
+  .phone::before, .phone::after, .phone-island, .phone-status, .phone-homebar { display: none; }
+  .phone-screen { border-radius: 0; }
+  .tg-input { padding-bottom: 10px; }
+  .pane.app .u-tabs { padding-bottom: 0; }
+}
+@media (prefers-reduced-motion: reduce) { .push, .msg.new { transition: none; animation: none; } }

@@ -80,7 +80,7 @@ function gap(s, p, si, a, titleKeys) {
       const ds = distractors(t, a.terms, gapped, s);
       if (ds === null) break;
       return q('gap', p, si, `Bo'sh joyga mos javobni tanlang: «${gapped}»`, inflect(t.text, suf), ds.map((x) => inflect(x.text, suf)),
-        'Gap matnda aynan shunday berilgan.', s, t.key, a.topics[p]);
+        '', s, t.key, a.topics[p]);
     }
   }
   return null;
@@ -115,7 +115,7 @@ export function candidates(a) {
       if (defined.has(`${p.n}:${si}`) || !usable(s)) return;
       const nq = numQuestion(s, sentences);
       if (nq) {
-        const x = q('num', p.n, si, nq.stem, nq.answer, nq.distractors, `Matnga ko'ra: ${nq.answer}.`, s, `num:${p.n}:${si}`, a.topics[p.n]);
+        const x = q('num', p.n, si, nq.stem, nq.answer, nq.distractors, '', s, `num:${p.n}:${si}`, a.topics[p.n]);
         if (x) out.push(x);
       }
       const g = gap(s, p.n, si, a, titleKeys);

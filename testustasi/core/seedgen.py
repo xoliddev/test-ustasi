@@ -35,7 +35,9 @@ def _pick_wrong(q: dict, h: int) -> int:
 
 def simulate(questions: list[dict], people: list[dict], seed: str, traps: dict[int, dict] | None = None, boost: int = 0) -> list[dict]:
     """[{"user", "answers": {question id: option}, "seconds"}]: who answers what, from strength, the question's level and
-    a stable per-answer number. ``traps[position]`` = {"kind": "pick", "option", "share"} or {"kind": "key", "option"}."""
+    a stable per-answer number. ``traps[position]`` = {"kind": "pick", "option", "share"} (a wrong option that attracts
+    the weaker students: ``share`` % at strength 50, twice that at 0, none at 100) or {"kind": "key", "option"} (one that
+    misleads the strong students most of all)."""
     traps = traps or {}
     out = []
     for s in people:
@@ -44,7 +46,7 @@ def simulate(questions: list[dict], people: list[dict], seed: str, traps: dict[i
         for i, q in enumerate(questions):
             r = h32(f"{seed}:{s['id']}:{q['id']}") % 100
             t = traps.get(i)
-            if t and t["kind"] == "pick" and h32(f"pick:{seed}:{s['id']}:{q['id']}") % 100 < t["share"]:
+            if t and t["kind"] == "pick" and h32(f"pick:{seed}:{s['id']}:{q['id']}") % 100 < t["share"] * (100 - a) // 50:  # the weaker, the likelier
                 answers[q["id"]] = t["option"]
                 continue
             if t and t["kind"] == "key":
@@ -54,7 +56,7 @@ def simulate(questions: list[dict], people: list[dict], seed: str, traps: dict[i
                     answers[q["id"]] = t["option"] if r < 25 else q["correct"] if r < 80 else _pick_wrong(q, r)
                 continue
             bias = h32(f"q:{seed}:{q['id']}") % 21 - 10
-            p = max(5, min(97, 30 + (a - 50) * 3 // 2 + (2 - q["level"]) * 10 + bias))
+            p = max(5, min(97, 42 + (a - 50) * 3 // 2 + (2 - q["level"]) * 10 + bias))
             answers[q["id"]] = q["correct"] if r < p else _pick_wrong(q, h32(f"w:{seed}:{s['id']}:{q['id']}"))
         seconds = len(questions) * (40 + (100 - a) * 3 // 4) + h32(f"t:{seed}:{s['id']}") % 90
         out.append({"user": s["id"], "answers": answers, "seconds": seconds})

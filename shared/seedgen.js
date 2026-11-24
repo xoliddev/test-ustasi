@@ -29,7 +29,7 @@ export function simulate(questions, people, seed, traps = {}, boost = 0) {
     questions.forEach((q, i) => {
       const r = h32(`${seed}:${s.id}:${q.id}`) % 100;
       const t = traps[i];
-      if (t && t.kind === 'pick' && h32(`pick:${seed}:${s.id}:${q.id}`) % 100 < t.share) {
+      if (t && t.kind === 'pick' && h32(`pick:${seed}:${s.id}:${q.id}`) % 100 < Math.floor((t.share * (100 - a)) / 50)) {
         answers[q.id] = t.option;
         return;
       }
@@ -39,7 +39,7 @@ export function simulate(questions, people, seed, traps = {}, boost = 0) {
         return;
       }
       const bias = (h32(`q:${seed}:${q.id}`) % 21) - 10;
-      const p = Math.max(5, Math.min(97, 30 + Math.floor(((a - 50) * 3) / 2) + (2 - q.level) * 10 + bias));
+      const p = Math.max(5, Math.min(97, 42 + Math.floor(((a - 50) * 3) / 2) + (2 - q.level) * 10 + bias));
       answers[q.id] = r < p ? q.correct : pickWrong(q, h32(`w:${seed}:${s.id}:${q.id}`));
     });
     const seconds = questions.length * (40 + Math.floor(((100 - a) * 3) / 4)) + (h32(`t:${seed}:${s.id}`) % 90);

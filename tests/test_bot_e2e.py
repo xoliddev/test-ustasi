@@ -112,7 +112,7 @@ async def test_retest_csv_and_the_summary_from_the_scheduler():
 
         qs = t["questions"]
         people = [{**s, "id": {-101: JASUR}.get(s["id"], s["id"])} for s in students()]
-        sims = simulate(qs, people, "bot", {2: {"kind": "pick", "option": 0, "share": 60}, 5: {"kind": "key", "option": 0}})
+        sims = simulate(qs, people, "bot", {2: {"kind": "pick", "option": 0, "share": 70}, 5: {"kind": "key", "option": 0}})
         for s in sims:
             v, _ = await svc.start(s["user"], t["id"])
             by = {i["stem"]: i for i in v["questions"]}

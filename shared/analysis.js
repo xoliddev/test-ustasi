@@ -54,15 +54,16 @@ export function table(people, attempts, total) {
   return { rows, stats };
 }
 
-const ranked = (last) => sortBy([...last.values()], (a) => [-a.score, a.submitted_at - a.started_at, a.user]);
+const ranked = (last, q = null) => sortBy([...last.values()], (a) => [-(a.score - (q !== null && ans(a, q.id) === q.correct ? 1 : 0)), a.submitted_at - a.started_at, a.user]);
 
 export function questionsReport(questions, attempts) {
   const order = ranked(finals(attempts));
   const n = order.length;
   const k = n >= MIN_FLAGS ? Math.max(1, rdiv(27 * n, 100)) : 0;
-  const top = order.slice(0, k);
-  const bottom = k ? order.slice(n - k) : [];
   const out = questions.map((q, pos) => {
+    const mine = ranked(finals(attempts), q);
+    const top = mine.slice(0, k);
+    const bottom = k ? mine.slice(n - k) : [];
     const picks = [0, 0, 0, 0];
     let blank = 0;
     for (const a of order) {

@@ -42,8 +42,15 @@ class Drafts:
         async with self.db.tx() as c:
             cur = await c.execute("INSERT INTO sources (teacher, title, body, kind, created_at) VALUES (?, ?, ?, ?, ?)",
                                   (uid, name, a["body"], kind, self.now()))
-        return {"id": cur.lastrowid, "title": name, "passages": len(a["passages"]), "chars": len(a["body"]),
-                "possible": len(gen.select(gen.candidates(a), 20, "mixed")), "ai": self.ai is not None}
+        return await self.source_info(uid, cur.lastrowid)
+
+    async def source_info(self, uid: int, sid: object) -> dict:
+        """{"id", "title", "passages", "chars", "possible"} — what the bot says when a text arrives."""
+        await self.need_teacher(uid)
+        s = await self.own_source(uid, sid)
+        a = gen.analyse(s["body"], s["title"])
+        return {"id": s["id"], "title": s["title"], "passages": len(a["passages"]), "chars": len(s["body"]),
+                "possible": len(gen.select(gen.candidates(a), 20, "mixed"))}
 
     async def own_source(self, uid: int, sid: object, c=None) -> dict:
         from .base import is_id

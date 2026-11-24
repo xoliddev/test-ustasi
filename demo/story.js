@@ -176,13 +176,38 @@ const ACTIONS = {
     focus(JASUR, 'chat');
     await pause(1400);
   },
-  // 10. 15:00. The retest results: the class's score on those topics rises; the story ends on the progress.
+  // 10. 15:00. Jasur solves the retest himself, this time without a mistake; the rest of the group follows and the
+  // story ends on the progress in those topics.
   async 10(env) {
     const { backend: b, focus, pause, ui } = env;
+    b.at(14 * 60 + 30);
+    focus(JASUR, 'chat');
+    await pause(700);
+    if (ui) {
+      await ui.botTapApp(JASUR, `?s=${env.s.retest}`);
+      focus(JASUR, 'app');
+      await ui.appClick(JASUR, '[data-testid=start]', 600);
+    }
+    const [view] = ui ? [await ui.attempt(JASUR)] : b.start(JASUR, env.s.retest);
+    const byStem = Object.fromEntries(b.questionsOf(env.s.retest).map((q) => [q.stem, q]));
+    for (const item of view.questions) {
+      const q = byStem[item.stem];
+      const choice = item.options.indexOf(q.options[q.correct]);
+      b.offset += 31_000;
+      if (ui) {
+        await ui.appClick(JASUR, `[data-testid=opt-${choice}]`, 260);
+        if (item.pos < view.questions.length - 1) await ui.appClick(JASUR, '[data-testid=next]', 240);
+      } else b.answer(JASUR, view.attempt, item.pos, choice);
+    }
+    if (ui) {
+      await ui.appClick(JASUR, '[data-testid=submit]');
+      await ui.appClick(JASUR, '[data-testid=confirm-yes]', 700);
+    } else b.notify(b.submit(JASUR, view.attempt)[1]);
+    await pause(1600);
     b.at(15 * 60);
-    b.notify(b.simulateClass(env.s.retest, {}, { boost: 8, seed: 'retest', from: b.nowMs() - 3 * 3_600_000 }));
+    b.notify(b.simulateClass(env.s.retest, {}, { skip: [JASUR], boost: 8, seed: 'retest', from: b.nowMs() - 3 * 3_600_000 }));
     focus(NODIRA, 'chat');
-    await pause(1800);
+    await pause(1500);
     focus(NODIRA, 'app');
     await ui?.appOpen(NODIRA, { view: 'analysis', id: env.s.test });
     await ui?.scrollApp(NODIRA, '[data-testid=progress]');

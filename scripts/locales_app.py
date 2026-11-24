@@ -26,7 +26,7 @@ APP = {
     "app.mix_easy": ("Osonroq", "Полегче"), "app.mix_mixed": ("Aralash", "Смешанно"), "app.mix_hard": ("Qiyinroq", "Посложнее"),
     "app.review": ("Ko'rib chiqish", "Проверка"), "app.review_lead": ("Har bir savolni iqtibos bilan solishtiring. Nashr qilmaguningizcha o'quvchilar hech narsa ko'rmaydi.",
                                                                      "Сверьте каждый вопрос с цитатой. Пока вы не опубликуете тест, ученики ничего не увидят."),
-    "app.fewer": ("So'ralgani {asked} ta edi: matndan {n} ta sifatli savol chiqdi.", "Просили {asked}: текст дал {n} качественных вопросов."),
+    "app.fewer": ("So'ralgani {asked} ta edi. Bot faqat matnda tasdig'i bor savollarni tuzdi — hozir {n} ta.", "Просили {asked}. Бот составил только вопросы, подтверждённые текстом, — сейчас их {n}."),
     "app.q": ("{n}-savol", "Вопрос {n}"), "app.quote": ("Matnda:", "В тексте:"), "app.why": ("Izoh:", "Пояснение:"),
     "app.edit": ("Tahrirlash", "Изменить"), "app.regen": ("Boshqasi", "Другой"), "app.delete": ("O'chirish", "Удалить"), "app.up": ("Yuqoriga", "Выше"),
     "app.down": ("Pastga", "Ниже"), "app.edited": ("tahrirlangan", "изменён"), "app.delete_ask": ("{n}-savol o'chirilsinmi?", "Удалить вопрос {n}?"),

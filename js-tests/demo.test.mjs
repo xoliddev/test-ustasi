@@ -66,6 +66,8 @@ test('the whole story in order: a file, the draft with quotes, the teacher edits
   const targets = b.targets.filter((g) => g.test === env.s.retest).map((g) => g.user);
   assert.ok(targets.includes(JASUR) && targets.length < 25 && targets.length >= 8, String(targets.length));
   await runStep(10, env);
+  const mine = b.attempts.find((a) => a.test === env.s.retest && a.user === JASUR);
+  assert.ok(mine && mine.submitted_at !== null && mine.score === b.questionsOf(env.s.retest).length, 'Jasur solves the retest himself, without a mistake');
   const pr = b.analysis(NODIRA, env.s.test).progress;
   assert.ok(pr.after - pr.before >= 25 && pr.after >= 75, JSON.stringify(pr));
   assert.match(last(bots[NODIRA]), /📈 Shu mavzular bo'yicha guruh natijasi: \d+% → \d+%/);

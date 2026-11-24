@@ -54,6 +54,16 @@ def test_ordinary_texts_from_other_subjects():
     assert "Bir xil narsalarning umumiy nomini bildirgan otlarga nima deyiladi?" in lang
 
 
+def test_a_definition_without_ga_before_the_term():
+    text = ("Suv aylanishi — suvning tabiatda uzluksiz harakatlanish jarayoni. Suvning bug'ga aylanishi bug'lanish deb ataladi. "
+            "Bug'ning suyuqlikka aylanishi kondensatsiya deyiladi. Bulutdan yerga tushadigan suv yog'in deb ataladi. "
+            "Bitta bandda bitta plastinka bo'lsa, oddiy barg deyiladi.")
+    qs = {q["stem"]: q for q in G.generate(text, 10)}
+    q = qs["Bug'ning suyuqlikka aylanishi nima deyiladi?"]
+    assert q["options"][q["correct"]] == "Kondensatsiya" and q["quote"] == "Bug'ning suyuqlikka aylanishi kondensatsiya deyiladi."
+    assert not any("bo'lsa" in s for s in qs), "a condition stays skipped"
+
+
 def test_quality_rules_skip_what_would_be_a_bad_question():
     text = ("Bu jarayon juda muhim. U har kuni takrorlanadi. Suv bo'lmasa, o'simlik quriydi. Mitoz — hujayraning bo'linish jarayoni. "
             "Meyoz — jinsiy hujayralarning hosil bo'lish jarayoni. Bitta hujayradan 10 dan 20 tagacha hujayra hosil bo'ladi.")

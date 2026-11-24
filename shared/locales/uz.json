@@ -200,7 +200,7 @@
  "app.mix_hard": "Qiyinroq",
  "app.review": "Ko'rib chiqish",
  "app.review_lead": "Har bir savolni iqtibos bilan solishtiring. Nashr qilmaguningizcha o'quvchilar hech narsa ko'rmaydi.",
- "app.fewer": "So'ralgani {asked} ta edi: matndan {n} ta sifatli savol chiqdi.",
+ "app.fewer": "So'ralgani {asked} ta edi. Bot faqat matnda tasdig'i bor savollarni tuzdi — hozir {n} ta.",
  "app.q": "{n}-savol",
  "app.quote": "Matnda:",
  "app.why": "Izoh:",

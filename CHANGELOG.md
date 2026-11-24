@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.0.1 — 2026-11-25
+
+- The generator reads a definition written as "Bug'ning suyuqlikka aylanishi kondensatsiya deyiladi" (no "-ga" before
+  the term), as common in textbooks; a condition before "deyiladi" stays skipped.
+- The demo's last step: Jasur solves the retest himself and sees "Xato yo'q", then the group's progress follows.
+- The draft's note after the teacher deletes a question no longer says the text gave fewer questions than it did.
+
 ## 1.0.0 — 2026-11-25
 
 Daily portfolio challenge #11.

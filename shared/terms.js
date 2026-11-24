@@ -68,25 +68,22 @@ function match(s, body, idx) {
   }
   if (!m) return null;
   const ws = m.groups.head.split(' ');
-  let term;
-  let head;
-  let suf;
   if (form === 'called') {
     let cut = -1;
     ws.slice(0, -1).forEach((w, i) => { if (ends(low(w), ['ga', 'ka', 'qa']) && L(w) > 4) cut = i; });
-    if (cut < 2 || ws.length - cut - 1 > 3) return null;
-    term = ws.slice(cut + 1);
-    head = ws.slice(0, cut + 1);
-    suf = low(ws[cut]).slice(-2);
-    head = [...head.slice(0, -1), head[head.length - 1].slice(0, -2)];
-  } else {
-    const k = tailTerm(ws, body, idx);
-    term = ws.slice(ws.length - k);
-    head = ws.slice(0, ws.length - k);
-    suf = '';
+    if (cut >= 2 && ws.length - cut - 1 <= 3) {
+      const term = ws.slice(cut + 1);
+      const head = ws.slice(0, cut + 1);
+      const d = [...head.slice(0, -1), head[head.length - 1].slice(0, -2)].join(' ');
+      if (okTerm(term) && okDef(d)) return [term.join(' '), d, low(ws[cut]).slice(-2), form];
+    }
+    if (m.groups.head.includes(',')) return null;
+    // "Bug'ning suyuqlikka aylanishi kondensatsiya deyiladi": no "-ga" before the term, read like "… deb ataladi"
   }
-  const d = head.join(' ');
-  return okTerm(term) && okDef(d) ? [term.join(' '), d, suf, form] : null;
+  const k = tailTerm(ws, body, idx);
+  const term = ws.slice(ws.length - k);
+  const d = ws.slice(0, ws.length - k).join(' ');
+  return okTerm(term) && okDef(d) ? [term.join(' '), d, '', form] : null;
 }
 
 export function definitions(passages) {

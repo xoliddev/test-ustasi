@@ -80,6 +80,8 @@ async function story(page, mobile) {
   await has(page, chat('jasur'), 'Qayta test: Fotosintez');
   ok(true, 'the retest reaches Jasur');
   await step(page, 10);
+  await has(page, J, "Xato yo'q — barakalla!");
+  ok(true, 'Jasur solves the retest himself, without a mistake');
   await page.waitForSelector(`${N} [data-testid=progress]`);
   const before = Number.parseInt(await text(page, `${N} [data-testid=prog-before]`), 10);
   const after = Number.parseInt(await text(page, `${N} [data-testid=prog-after]`), 10);

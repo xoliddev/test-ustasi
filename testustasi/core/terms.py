@@ -80,13 +80,16 @@ def _match(s: str, body: list[list[str]], idx: int) -> tuple[str, str, str, str]
     ws = m["head"].split(" ")
     if form == "called":
         cut = max((i for i, w in enumerate(ws[:-1]) if low(w).endswith(("ga", "ka", "qa")) and len(w) > 4), default=-1)
-        if cut < 2 or len(ws) - cut - 1 > 3:
+        if cut >= 2 and len(ws) - cut - 1 <= 3:
+            term, head = ws[cut + 1:], ws[:cut + 1]
+            d = " ".join([*head[:-1], head[-1][:-2]])
+            if _ok_term(term) and _ok_def(d):
+                return " ".join(term), d, low(ws[cut])[-2:], form
+        if "," in m["head"]:
             return None
-        term, head, suf = ws[cut + 1:], ws[:cut + 1], low(ws[cut])[-2:]
-        head = [*head[:-1], head[-1][:-2]]
-    else:
-        k = _tail_term(ws, body, idx)
-        term, head, suf = ws[-k:], ws[:-k], ""
+        # "Bug'ning suyuqlikka aylanishi kondensatsiya deyiladi": no "-ga" before the term, read like "… deb ataladi"
+    k = _tail_term(ws, body, idx)
+    term, head, suf = ws[-k:], ws[:-k], ""
     d = " ".join(head)
     return (" ".join(term), d, suf, form) if _ok_term(term) and _ok_def(d) else None
 

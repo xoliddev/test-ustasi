@@ -10,10 +10,10 @@ import re
 import unicodedata
 
 _BIDI = "".join(f"{chr(a)}-{chr(b)}" for a, b in ((0x200B, 0x200F), (0x202A, 0x202E), (0x2066, 0x2069)))
-_CONTROL = re.compile(f"[\x00-\x08\x0b-\x1f\x7f{_BIDI}﻿]")
-_SPACE = re.compile(r"[ \t\n\r\f\v   　]+")
-_HSPACE = re.compile(r"[ \t\f\v 　]+")
-_APOS = re.compile("[ʻʼ’‘`´′]")
+_CONTROL = re.compile(f"[\x00-\x08\x0b-\x1f\x7f{_BIDI}\ufeff]")
+_SPACE = re.compile(r"[ \t\n\r\f\v\u00a0\u2028\u2029\u3000]+")
+_HSPACE = re.compile(r"[ \t\f\v\u00a0\u3000]+")
+_APOS = re.compile("[\u02bb\u02bc\u2019\u2018`\u00b4\u2032]")
 LETTER = "A-Za-zÀ-ɏЀ-ӿ"
 WORD = re.compile(f"[{LETTER}0-9](?:[{LETTER}0-9']|-(?=[{LETTER}0-9]))*")
 _NOT_WORD = re.compile(f"[^{LETTER}0-9]+")
@@ -45,7 +45,7 @@ def normalize_source(text: str) -> str:
     spaces, at most one blank line between paragraphs. Quotes are checked against exactly this text."""
     s = unicodedata.normalize("NFC", text.replace("\r\n", "\n").replace("\r", "\n"))
     s = _APOS.sub("'", _CONTROL.sub(" ", s))
-    s = s.replace("–", "—").replace("‒", "—").replace(" - ", " — ")
+    s = s.replace("\u2013", "—").replace("\u2012", "—").replace(" - ", " — ")
     lines = [_HSPACE.sub(" ", line).strip() for line in s.split("\n")]
     out: list[str] = []
     for line in lines:
@@ -66,6 +66,25 @@ def latin(text: str) -> str:
             out.append(CYR.get(ch, ch))
         prev = ch
     return _APOS.sub("'", "".join(out))
+
+
+def uz_cyrillic(text: str) -> bool:
+    """Uzbek written in Cyrillic: more Cyrillic letters than Latin ones, and at least one of ў қ ғ ҳ."""
+    cyr = sum(1 for ch in text if "Ѐ" <= ch <= "ӿ")
+    lat = sum(1 for ch in text if "a" <= ch.lower() <= "z")
+    return cyr > lat and any(ch in text.lower() for ch in "ўқғҳ")
+
+
+def to_latin(text: str) -> str:
+    """Uzbek Cyrillic -> Latin, keeping capitals ("Ўсимлик" -> "O'simlik", "ШАРҚ" -> "ShARQ")."""
+    out = []
+    prev = " "
+    for ch in text:
+        lo = ch.lower()
+        t = "ye" if lo == "е" and (not prev.isalpha() or prev.lower() in _VOWELS or prev.lower() in "ъь") else CYR.get(lo, ch)
+        out.append(t[:1].upper() + t[1:] if ch != lo and lo in CYR else t)
+        prev = ch
+    return "".join(out)
 
 
 def norm_match(text: str) -> str:

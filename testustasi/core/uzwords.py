@@ -37,6 +37,7 @@ tur juft qavat bo'lim asr nafar dona qator sahifa gers santimetr sm millimetr mm
 qit'a okean sayyora
 """
 COUNTERS = frozenset(_COUNTERS.split())
+AFTER_COUNTER = frozenset((*CAPS, "i", "si", "ni", "dan", "ga", "gacha", "igacha", "sigacha", "lik", "ligi", "ini", "ida", "idan", "iga", "ining"))
 
 
 def stem(word: str) -> str:
@@ -110,6 +111,8 @@ def number_word(tokens: list[str], i: int) -> tuple[int, int] | None:
     if w in TA:
         return TA[w], 1
     if w in TENS:
+        if i + 1 < len(tokens) and low(tokens[i + 1]) in TA:
+            return TENS[w] + TA[low(tokens[i + 1])], 2
         if i + 1 < len(tokens) and low(tokens[i + 1]) in UNITS:
             return TENS[w] + UNITS[low(tokens[i + 1])], 2
         return TENS[w], 1
@@ -122,6 +125,6 @@ def counter_of(word: str) -> tuple[str, str] | None:
     """("bosqichda") -> ("bosqich", "da"); ("foizi") -> ("foiz", "i"); None for an ordinary word."""
     w = low(word)
     for c in sorted(COUNTERS, key=lambda x: (-len(x), x)):
-        if w.startswith(c) and (len(w) == len(c) or w[len(c):] in (*CAPS, "i", "si", "ni", "dan", "ga", "gacha", "igacha", "sigacha", "lik", "ligi")):
+        if w.startswith(c) and (len(w) == len(c) or w[len(c):] in AFTER_COUNTER):
             return c, w[len(c):]
     return None

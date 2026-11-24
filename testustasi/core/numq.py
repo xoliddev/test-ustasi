@@ -10,6 +10,7 @@ from .text import WORD, cap, low
 from .uzwords import COUNTERS, counter_of, number_word
 
 YEAR = re.compile(r"^([0-9]{3,4})-yil(da|dan|i|ga|ning|gi)?$")
+_PCT_CASE = re.compile(r" ?(ga|dan|ni|da|ning)(?![a-z])")
 
 
 def _spans(sentence: str) -> list[tuple[str, int, int]]:
@@ -35,9 +36,10 @@ def find(sentence: str) -> dict | None:
         if i and number_word(toks, i - 1) is not None:
             continue
         if sentence[last_end:last_end + 1] == "%":
-            return {"kind": "pct", "value": value, "start": start, "end": last_end + 1, "ask": "necha foiz", "counter": "foiz"}
-        if low(tok).endswith("ta") and not tok[:1].isdigit():
-            return {"kind": "count", "value": value, "start": start, "end": end, "ask": "nechta", "counter": "ta"}
+            m = _PCT_CASE.match(sentence, last_end + 1)
+            return {"kind": "pct", "value": value, "start": start, "end": m.end() if m else last_end + 1, "ask": f"necha foiz{m[1] if m else ''}", "counter": "foiz"}
+        if low(toks[i + used - 1]).endswith("ta") and not toks[i + used - 1][:1].isdigit():
+            return {"kind": "count", "value": value, "start": start, "end": last_end, "ask": "nechta", "counter": "ta"}
         if low(nxt) == "ta":
             return {"kind": "count", "value": value, "start": start, "end": sp[i + used][2], "ask": "nechta", "counter": "ta"}
         c = counter_of(nxt) if nxt else None

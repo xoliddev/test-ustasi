@@ -10,7 +10,7 @@ from __future__ import annotations
 
 import re
 
-from .text import WORD, normalize_source
+from .text import WORD, normalize_source, to_latin, uz_cyrillic
 
 MAX_PASSAGE = 900
 TARGET_PASSAGE = 650
@@ -101,6 +101,8 @@ def _chunks(text: str) -> list[str]:
 def split(text: str) -> list[dict]:
     """Numbered passages: {"n", "heading", "text", "sentences"}. Short paragraphs under the same heading are joined."""
     body = normalize_source(text)
+    if uz_cyrillic(body):  # the rules read Uzbek Latin: a Cyrillic text is stored (and quoted) in Latin
+        body = to_latin(body)
     passages: list[dict] = []
     for heading, para in _paragraphs(body):
         for piece in _chunks(para):

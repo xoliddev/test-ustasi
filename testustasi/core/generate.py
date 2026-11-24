@@ -150,15 +150,16 @@ def candidates(a: dict) -> list[dict]:
     return out
 
 
-def select(cands: list[dict], n: int, mix: str = "mixed", used: list[dict] = ()) -> list[dict]:
+def select(cands: list[dict], n: int, mix: str = "mixed", used: list[dict] = (), same_answer: bool = False) -> list[dict]:
     """Up to ``n`` questions spread over the passages (one per passage per round), one per sentence and one per answer,
-    the kinds ordered by ``mix``; ``used`` questions (already in a test) are never repeated."""
+    the kinds ordered by ``mix``; ``used`` questions (already in a test) are never repeated — their answers neither,
+    unless ``same_answer`` (a retest asks the same thing in a new way)."""
     order = ORDERS.get(mix, ORDERS["mixed"])
     weight = WEIGHTS.get(mix, WEIGHTS["mixed"])
     by_p: dict[int, list[dict]] = {}
     for c in cands:
         by_p.setdefault(c["passage"], []).append(c)
-    keys = {u["key"] for u in used}
+    keys = set() if same_answer else {u["key"] for u in used}
     sents = {(u["passage"], u["sent"]) for u in used}
     uids = {u["uid"] for u in used}
     chosen: list[dict] = []

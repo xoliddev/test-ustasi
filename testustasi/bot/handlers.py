@@ -11,9 +11,8 @@ from aiogram.filters import CommandObject, CommandStart
 from aiogram.types import BufferedInputFile, CallbackQuery, Message
 
 from ..common import Refused
-from ..core.clock import civil, hhmm, local_day, local_minute
 from ..groups import norm_code
-from ..i18n import t
+from ..i18n import csv_labels, stamp, t
 from ..sources import SourceError, extract_async
 from . import views
 from .setup import show
@@ -25,7 +24,6 @@ PATTERNS = [(name, re.compile(rx)) for name, rx in (
     ("menu", r"m"), ("lang", r"lang"), ("help", r"h"), ("teacher", r"role:t"), ("student", r"role:s"), ("new", r"nt"), ("count", rf"n:{N}"),
     ("mix", rf"n:{N}:(5|10|15|20)"), ("make", rf"x:{N}:(5|10|15|20):(easy|mixed|hard)"), ("tests", r"tl"), ("test", rf"t:{N}"), ("retest_ask", rf"rq:{N}"),
     ("retest", rf"rx:{N}"), ("csv", rf"csv:{N}"), ("classes", r"cl"), ("class", rf"c:{N}"), ("new_class", r"cn"), ("mine", r"st"), ("code", r"code"))]
-CSV_LABELS = ("no", "name", "score", "pct", "grade", "time", "status", "at")
 
 
 async def menu_screen(svc, me: int, lang: str) -> tuple:
@@ -35,17 +33,6 @@ async def menu_screen(svc, me: int, lang: str) -> tuple:
     if u["role"] == "student":
         return views.menu_student(lang, u["name"], sum(1 for x in await svc.my_tests(me) if x["status"] == "new"))
     return views.hello(lang)
-
-
-def csv_labels(lang: str) -> dict[str, str]:
-    out = {k: t(lang, f"csv.{k}") for k in CSV_LABELS}
-    out.update({f"st_{s}": t(lang, f"csv.st_{s}") for s in ("done", "working", "waiting")})
-    return out
-
-
-def stamp(ms: int) -> str:
-    y, m, d = civil(local_day(ms))
-    return f"{d:02d}.{m:02d}.{y} {hhmm(local_minute(ms))}"
 
 
 async def joined(message: Message, me: int, lang: str, svc, cfg, payload: str) -> None:

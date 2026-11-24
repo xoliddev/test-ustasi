@@ -52,7 +52,7 @@ async def test_teacher_sends_a_text_and_gets_a_draft_to_review():
         assert text.startswith("✅ <b>Qoralama tayyor") and "11 ta savol (so'ralgani 15 ta edi: matndan shuncha sifatli savol chiqdi)" in text
         assert "AI" not in text and "sun'iy" not in text, "no technical notes on a screen"
         tid = (await svc.tests(NODIRA))[0]["id"]
-        assert tg.apps(NODIRA) == [f"https://ustasi.example/webapp/#t={tid}"]
+        assert tg.apps(NODIRA) == [f"https://ustasi.example/webapp/?t={tid}"]
         await tg.tap(NODIRA, "📋 Testlarim")
         assert any(m.startswith("✅ <b>Qoralama tayyor") for m in tg.texts(NODIRA)), "the ready message stays in the chat"
 
@@ -75,7 +75,7 @@ async def test_students_join_get_tests_and_the_teacher_gets_results():
         await tg.notifier.send([{"to": JASUR, "kind": "new_test", "test": t["id"], "title": t["title"], "count": 10, "minutes": 15,
                                  "deadline": at_local(TODAY, 23 * 60 + 59)}])
         assert tg.last(JASUR) == "📝 <b>Yangi test: Fotosintez</b>\n10 ta savol · 15 daqiqa\nMuddat: bugun, 23:59"
-        assert tg.apps(JASUR) == [f"https://ustasi.example/webapp/#s={t['id']}"]
+        assert tg.apps(JASUR) == [f"https://ustasi.example/webapp/?s={t['id']}"]
         await tg.say(JASUR, "/start")
         await tg.tap(JASUR, "📋 Testlarim")
         assert any("🆕 Fotosintez · 10 ta savol" in b for b in tg.buttons(JASUR))

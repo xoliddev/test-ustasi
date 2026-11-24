@@ -86,3 +86,18 @@ def flag_text(lang: str, r: dict) -> str | None:
     if r["flag"] in ("key", "hard") and r["pick"]:
         return t(lang, f"flag.{r['flag']}_pick", pct=r["pick"]["pct"], letter=r["pick"]["letter"])
     return t(lang, f"flag.{r['flag']}")
+
+
+CSV_LABELS = ("no", "name", "score", "pct", "grade", "time", "status", "at")
+
+
+def csv_labels(lang: str) -> dict[str, str]:
+    out = {k: t(lang, f"csv.{k}") for k in CSV_LABELS}
+    out.update({f"st_{s}": t(lang, f"csv.st_{s}") for s in ("done", "working", "waiting")})
+    return out
+
+
+def stamp(ms: int) -> str:
+    """A CSV time: "25.11.2026 09:20" (Tashkent)."""
+    y, m, d = civil(local_day(ms))
+    return f"{d:02d}.{m:02d}.{y} {hhmm(local_minute(ms))}"

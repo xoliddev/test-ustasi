@@ -38,7 +38,8 @@ class Results:
             r.update(stem=q["stem"], options=q["options"], correct=q["correct"], kind=q["kind"], quote=q["quote"])
         plan = A.retest_plan(qs, atts)
         child = await self.db.one("SELECT id FROM tests WHERE parent = ? AND teacher = ?", (t["id"], uid))
-        out = {"id": t["id"], "title": t["title"], "parent": t["parent"], "n": rep["n"], "k": rep["k"], "questions": rep["questions"], "topics": tops,
+        out = {"id": t["id"], "title": t["title"], "parent": t["parent"], "code": t["code"], "deadline": t["deadline"], "n": rep["n"],
+               "k": rep["k"], "questions": rep["questions"], "topics": tops,
                "plan": {**plan, "count": len(plan["students"]), "names": [names.get(u, "?") for u in plan["students"]]}, "retest": None, "progress": None}
         if child:
             out["retest"] = child["id"]
